@@ -6,12 +6,14 @@
   "main": "index.js",
   "scripts": {
     "dev": "noemon src/index.js"
-    
   },
   "keywords": [
     "javascript",
     "backend"
   ],
   "author": "sahil",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "prettier": "^3.0.3"
+  }
 }
