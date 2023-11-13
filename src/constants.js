@@ -1,3 +1,5 @@
 
 
-export const db_name="MYBACKEND"
+// db name 
+
+export const DB_NAME="MYBACKEND";
