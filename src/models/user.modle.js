@@ -2,7 +2,7 @@
 
 import mongoose,{Schema} from "mongoose";
 
-import { Jwt } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt"
 
 
@@ -47,7 +47,7 @@ const userSchema=new Schema({
     },
     watchHistary:[{
         type:Schema.Types.ObjectId,
-        type:"video"
+        ref:"video"
     }]
     ,
     password:{
@@ -67,13 +67,19 @@ const userSchema=new Schema({
 
 // paylod:encry --id ,pass
 
-
-userSchema.plugin("save",async function(next){
+userSchema.pre("save",async function(next){
     if(!this.isModified("password")) return next();
     
-    this.password=bcrypt.hash(this.hash,10)
+    this.password=await bcrypt.hash(this.hash,10)
     next()
-})
+  })
+  
+// userSchema.plugin("save",async function(next){
+//     if(!this.isModified("password")) return next();
+    
+//     this.password= await bcrypt.hash(this.hash,10)
+//     next()
+// })
 
 userSchema.method.isPasswordCorrect=async function(password){
     return await bcrypt.compare(password,this.password)
