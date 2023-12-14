@@ -3,9 +3,9 @@ import { asyncHndler } from "../utils/asyncHandler.js";
 import {ApiError}from "../utils/ApiErros.js"
 import { User } from "../models/user.modle.js";
 
-import router from "../routes/user.routes.js";
+
 import {uplodeOnCloudnary} from "../utils/cloudnary.js"
-import { upload } from "../middlewares/multer.middileware.js";
+
 import { ApiResponse } from "../utils/ApiResponse.js";
 
 
@@ -25,47 +25,50 @@ const registerUser=asyncHndler(async(req,res)=>{
     // check for user creation
     // return res
 
-    const {fullName,email,username,password}=req.body;
+    const {fullName,email,userName,password}=req.body;
     console.log("email :" , email);
+    console.log('fullname',fullName , userName,password);
 
     // if (fullName==="") {
     //     throw new ApiError(400,"full Name is required")
         
     // }
 
-    if([fullName, email, username,password].some((fiield)=>fiield?.trim()==="")){
+    if([fullName, email, userName,password].some((fiield)=>fiield?.trim()==="")){
         throw new ApiError(400,"All fields are required")
 
     }
 
-  const ExistedUser=  User.findOne({
-        $or:[{username},{email}]
-    })
+    const ExistedUser = await User.findOne({
+        $or: [{ userName }, { email }]
+    }).exec();
+    
+    if (ExistedUser) {
+        throw new ApiError(409, "User with email or username already exists");
+    }
+    
 
-if(ExistedUser){
-    throw new ApiError(409,"user with email or email exits")
-}
 
-   const avaterLocalpath=req.files?.avater[0]?.path
+   const avaterLocalpath=req.files?.avt[0]?.path
   const coverImageLocalpath= req.files?.coverImage[0]?.path;
 
   if(!avaterLocalpath){
     throw new ApiError(400,"Avtar file is reqried")
   }
 
-  const avtar=await uplodeOnCloudnary(avaterLocalpath)
+  const avt=await uplodeOnCloudnary(avaterLocalpath)
   const coverImage=await uplodeOnCloudnary(coverImageLocalpath)
 
-  if(!avtar)
+  if(!avt)
   throw new ApiError(400,"Avtar file is reqried")
 
 const user= await User.create({
     fullName,
-    avatar:avtar.url,
+    avt:avt.url,
     coverImage:coverImage?.url ||"",
     email,
     password,
-    username:username.toLowerCase()
+    userName:userName.toLowerCase()
 })
 
 const createdusername=await User.findById(user._id).select(
