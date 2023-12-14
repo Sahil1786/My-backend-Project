@@ -34,7 +34,7 @@ const userSchema=new Schema({
     
     },
 
-    ava:{
+    avt:{
         type:String,//cloudnary url
         required:true,
      

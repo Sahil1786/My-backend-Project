@@ -49,28 +49,29 @@ const registerUser=asyncHndler(async(req,res)=>{
     
 
 
-   const avaterLocalpath=req.files?.avt[0]?.path
+    const avaterLocalpath = req.files?.avt[0]?.path;
   const coverImageLocalpath= req.files?.coverImage[0]?.path;
 
   if(!avaterLocalpath){
-    throw new ApiError(400,"Avtar file is reqried")
+    throw new ApiError(400,"avt2 file is reqried")
   }
 
   const avt=await uplodeOnCloudnary(avaterLocalpath)
   const coverImage=await uplodeOnCloudnary(coverImageLocalpath)
 
   if(!avt)
-  throw new ApiError(400,"Avtar file is reqried")
+  throw new ApiError(400,"avt file is reqried")
 
 const user= await User.create({
     fullName,
     avt:avt.url,
+  
     coverImage:coverImage?.url ||"",
     email,
     password,
     userName:userName.toLowerCase()
 })
-
+console.log(avt.url);
 const createdusername=await User.findById(user._id).select(
     "-password -refereshToken"
 )

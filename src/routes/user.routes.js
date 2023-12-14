@@ -12,7 +12,7 @@ router.route("/register").post(
     upload.fields([
 {
 
-    name:"ava",
+    name:"avt",
     maxCount:1
 },
 {
